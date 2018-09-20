@@ -21,11 +21,11 @@ function findGenre(id) {
     return genres.find(c => c.id === id);
 }
 
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
     res.send(genres);
 })
 
-router.get('/:id', (req, res, next) => {
+router.get('/:id', (req, res) => {
     const genre = findGenre(parseInt(req.params.id));
     
     if (!genre) return res.status(404).send(`Genre ${req.params.id} not found`);
@@ -33,7 +33,7 @@ router.get('/:id', (req, res, next) => {
     res.send(genre);
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', (req, res) => {
     const { error } = validateGenre(req.body);
 
     if (error) return res.status(400).send(error.details[0].message);
@@ -47,7 +47,7 @@ router.post('/', (req, res, next) => {
     res.send(genre);
 });
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id', (req, res) => {
     const genre = findGenre(parseInt(req.params.id));
 
     if (!genre) return res.status(404).send(`Genre ${req.params.id} not found`);
@@ -60,7 +60,7 @@ router.put('/:id', (req, res, next) => {
     res.send(genre);
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', (req, res) => {
     const genre = findGenre(parseInt(req.params.id));
 
     if (!genre) return res.status(404).send(`Genre ${req.params.id} not found`);

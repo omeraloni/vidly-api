@@ -2,11 +2,11 @@ const router = require('express').Router();
 const Joi = require('joi');
 
 const genres = [
-    { id: 1, name: 'action' },
-    { id: 2, name: 'drama' },
-    { id: 3, name: 'comedy' },
-    { id: 4, name: 'horror' },
-    { id: 5, name: 'documentary' },
+    { id: 1, name: 'Action' },
+    { id: 2, name: 'Drama' },
+    { id: 3, name: 'Comedy' },
+    { id: 4, name: 'Horror' },
+    { id: 5, name: 'Documentary' },
 ];
 
 function validateGenre(genres) {

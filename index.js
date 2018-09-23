@@ -8,6 +8,12 @@ const genres = require('./routes/genres');
 const app = express();
 
 app.use(express.json());
+
+if (app.get('env') == 'development') {
+    app.use(morgan('tiny'));
+    debugStartup('Morgan enabled');
+}
+
 app.use('/api/genres', genres);
 
 // Configuration
@@ -15,14 +21,6 @@ debugConfig(`App Name: ${config.get('name')}`);
 
 const debugLevel = config.get('debug_level');
 debugStartup(`Debug level: ${debugLevel}`);
-
-if (app.get('env') == 'development') {
-
-    if (debugLevel > 0) {
-        app.use(morgan('tiny'));
-        debugStartup('Morgan enabled');
-    }
-}
 
 const port = process.env.PORT || 4000;
 

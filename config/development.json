@@ -1,0 +1,5 @@
+{
+    "name": "Courses API - Development",
+    "port": 5000,
+    "debug_level": 1
+}

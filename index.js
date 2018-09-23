@@ -5,7 +5,13 @@ const debugStartup = require('debug')('app:startup');
 const debugDb = require('debug')('app:db');
 const debugConfig = require('debug')('app:config');
 const genres = require('./routes/genres');
+const mongoose = require('mongoose');
 const app = express();
+
+
+mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
+    .then(() => debugDb('Connected to MongoDB...'))
+    .catch(err => debugDb('Could not connect to MongoDB', err.message));
 
 app.use(express.json());
 
@@ -19,11 +25,13 @@ app.use('/api/genres', genres);
 // Configuration
 debugConfig(`App Name: ${config.get('name')}`);
 
+/*
 const debugLevel = config.get('debug_level');
 debugStartup(`Debug level: ${debugLevel}`);
+*/
 
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
-    console.log(`Listening on port ${port}...`);
+    debugStartup(`Listening on port ${port}...`);
 });

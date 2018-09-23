@@ -1,13 +1,16 @@
 const router = require('express').Router();
 const Joi = require('joi');
+const mongoose = require('mongoose');
 
-const genres = [
-    { id: 1, name: 'Action' },
-    { id: 2, name: 'Drama' },
-    { id: 3, name: 'Comedy' },
-    { id: 4, name: 'Horror' },
-    { id: 5, name: 'Documentary' },
-];
+
+const Genre = mongoose.model('Genre', new mongoose.Schema({
+    name: { 
+        type: String, 
+        required: true,
+        minlength: 4,
+        maxlength: 50,
+    }
+}));
 
 function validateGenre(genres) {
     const schema = {
@@ -21,30 +24,41 @@ function findGenre(id) {
     return genres.find(c => c.id === id);
 }
 
-router.get('/', (req, res, next) => {
-    res.send(genres);
+router.get('/', async (req, res) => {
+    try {
+        const genres = await Genre.find().sort('name').select({ name: 1, id: 1 });
+        res.send(genres);
+    }
+    catch (ex) {
+        res.status(400).json({ error: ex.message });
+    }
 })
 
-router.get('/:id', (req, res) => {
-    const genre = findGenre(parseInt(req.params.id));
-    
-    if (!genre) return res.status(404).json({ error: `Genre ${req.params.id} not found` });
-    
-    res.send(genre);
+router.get('/:id', async (req, res) => {
+
+    try {
+        const genre = await Genre.findById(req.params.id).select({ name: 1});
+        console.log(genre);
+        res.send(genre);    
+    }
+    catch (ex) {
+        res.status(404).json({ error: ex.message });
+    }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const { error } = validateGenre(req.body);
 
     if (error) return res.status(400).json({ error: error.details[0].message });
 
-    const genre = { 
-        id: genres.length + 1,
-        name: req.body.name,
-    };
-
-    genres.push(genre);
-    res.send(genre);
+    try {
+        const genre = new Genre({ name: req.body.name });
+        await genre.save();
+        res.send(genre);
+    }
+    catch (ex) {
+        res.status(400).json({ error: ex.message });
+    }
 });
 
 // Default handler for all / routes

@@ -6,26 +6,28 @@ const Customer = mongoose.model('Customer', new mongoose.Schema({
     name: { 
         type: String, 
         required: true,
-        minlength: 2,
-        maxlength: 30,
+        minlength: 5,
+        maxlength: 50,
     },
 
-    isGold: Boolean,
+    isGold: {
+        type: Boolean,
+        default: false,
+    },
 
     phone: {
         type: String,
         required: true,
-        minlength: 10,
-        maxlength: 10,
+        minlength: 5,
+        maxlength: 50,
     }
 }));
 
-
 function validateCustomer(customer) {
     const schema = {
-        name: Joi.string().min(2).max(30).required(),
-        isGold: Joi.bool().optional(),
-        phone: Joi.string().min(10).max(10).required()
+        name: Joi.string().min(5).max(50).required(),
+        isGold: Joi.boolean().optional(),
+        phone: Joi.string().min(5).max(50).required()
     };
 
     return Joi.validate(customer, schema);
@@ -58,7 +60,11 @@ router.post('/', async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
-        const customer = new Customer({ name: req.body.name, isGold: req.body.isGold, phone: req.body.phone });
+        const customer = new Customer({ 
+            name: req.body.name, 
+            isGold: req.body.isGold, 
+            phone: req.body.phone
+        });
         await customer.save();
         res.send(customer);
     }

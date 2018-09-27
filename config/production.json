@@ -1,4 +1,4 @@
 {
-    "name": "Courses API - Production",
+    "name": "Vidly API - Production",
     "port": 4000,
 }

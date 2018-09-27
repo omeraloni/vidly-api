@@ -1,5 +1,5 @@
 {
-    "name": "Courses API - Development",
+    "name": "Vidly API - Development",
     "port": 5000,
     "debug_level": 1
 }

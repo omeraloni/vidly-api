@@ -6,9 +6,9 @@ const debugDb = require('debug')('app:db');
 const debugConfig = require('debug')('app:config');
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
+const movies = require('./routes/movies');
 const mongoose = require('mongoose');
 const app = express();
-
 
 mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
     .then(() => debugDb('Connected to MongoDB...'))
@@ -23,6 +23,8 @@ if (app.get('env') == 'development') {
 
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/movies', movies);
+
 
 // Configuration
 debugConfig(`App Name: ${config.get('name')}`);

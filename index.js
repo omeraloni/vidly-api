@@ -7,6 +7,7 @@ const debugConfig = require('debug')('app:config');
 const genres = require('./routes/genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
+const rentals = require('./routes/rentals');
 const mongoose = require('mongoose');
 const app = express();
 
@@ -24,7 +25,7 @@ if (app.get('env') == 'development') {
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/movies', movies);
-
+app.use('/api/rentals', rentals);
 
 // Configuration
 debugConfig(`App Name: ${config.get('name')}`);

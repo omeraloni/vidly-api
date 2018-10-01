@@ -15,6 +15,11 @@ const auth = require('./routes/auth');
 const mongoose = require('mongoose');
 const app = express();
 
+if (!config.has('jwtPrivateKey')) {
+    console.error('FATAL ERROR: jwtPrivateKey is not defined');
+    process.exit(1);
+}
+
 mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
     .then(() => debugDb('Connected to MongoDB...'))
     .catch(err => debugDb('Could not connect to MongoDB', err.message));
@@ -34,11 +39,6 @@ app.use('/api/auth', auth);
 
 // Configuration
 debugConfig(`App Name: ${config.get('name')}`);
-
-/*
-const debugLevel = config.get('debug_level');
-debugStartup(`Debug level: ${debugLevel}`);
-*/
 
 const port = process.env.PORT || 4000;
 

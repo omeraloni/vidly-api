@@ -2,6 +2,10 @@ const router = require('express').Router();
 const { Rental, validate } = require('../models/rental');
 const { Movie } = require('../models/movie');
 const { Customer } = require('../models/customer');
+const mongoose = require('mongoose');
+const Fawn = require('fawn');
+
+Fawn.init(mongoose);
 
 router.get('/', async (req, res) => {
     try {
@@ -38,31 +42,34 @@ router.post('/', async (req, res) => {
 
     if (movie.numberInStock == 0) return res.status(404).json({ error: `Movie ${movie.title} is out of stock`});
 
+    const rental = new Rental({ 
+        customer: {
+            _id: customer._id,
+            name: customer.name,
+            phone: customer.phone
+        },            
+        movie : {
+            _id: movie._id,
+            title: movie.title,
+            dailyRentalRate: movie.dailyRentalRate,
+        },
+
+        date: Date.now
+    });
+
     try {
-        const rental = new Rental({ 
-            customer: {
-                _id: customer._id,
-                name: customer.name,
-                phone: customer.phone
-            },            
-            movie : {
-                _id: movie._id,
-                title: movie.title,
-                dailyRentalRate: movie.dailyRentalRate,
-            },
-
-            date: Date.now
-        });
-
-        await rental.save();
-
-        movie.numberInStock--;
-        await movie.save();
+        // Transactions instead of 2 save operations
+        new Fawn.Task()
+            .save('rentals', rental)
+            .update('movies', { _id: movie._id}, { 
+                $inc: { numberInStock: -1}
+            })
+            .run();
 
         res.send(rental);
     }
     catch (ex) {
-        res.status(400).json({ error: ex.message });
+        res.status(500).json({ error: `Internal server error ${ex.message}` });
     }
 });
 

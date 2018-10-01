@@ -18,13 +18,12 @@ mongoose.connect('mongodb://localhost/vidly', { useNewUrlParser: true })
     .then(() => debugDb('Connected to MongoDB...'))
     .catch(err => debugDb('Could not connect to MongoDB', err.message));
 
-app.use(express.json());
-
 if (app.get('env') == 'development') {
     app.use(morgan('tiny'));
     debugStartup('Morgan enabled');
 }
 
+app.use(express.json());
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/movies', movies);

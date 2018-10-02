@@ -38,7 +38,7 @@ module.exports = function() {
                 winston.format.colorize(),
                 winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
                 myFormat
-            ),
+            )
         }));
 
         //winston.exitOnError = false;

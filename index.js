@@ -1,3 +1,4 @@
+require('express-async-errors');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const express = require('express');
@@ -13,8 +14,8 @@ const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const error = require('./middleware/error');
-require('express-async-errors');
 const mongoose = require('mongoose');
+
 const app = express();
 
 if (!config.has('jwtPrivateKey')) {

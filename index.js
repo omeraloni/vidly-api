@@ -14,7 +14,19 @@ const rentals = require('./routes/rentals');
 const users = require('./routes/users');
 const auth = require('./routes/auth');
 const error = require('./middleware/error');
+const winston = require('./middleware/winston');
 const mongoose = require('mongoose');
+
+winston.handleExceptions = true;
+
+if (process.env.NODE_ENV == 'development') {
+    winston.exitOnError = false;
+}
+
+// winston catches only unhandledException, so in case of unhandledRejection, it is re-thrown
+process.on('unhandledRejection', (ex) => {
+    throw ex;
+});
 
 const app = express();
 

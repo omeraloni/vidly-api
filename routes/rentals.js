@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
         res.send(rentals);
     }
     catch (ex) {
-        res.status(400).json({ error: ex.message });
+        res.status(500).send('Internal server error.');
     }
 })
 
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
         res.send(movie);    
     }
     catch (ex) {
-        res.status(404).json({ error: ex.message });
+        res.status(500).send('Internal server error.');
     }
 });
 */
@@ -107,7 +107,7 @@ router.put('/:id', auth, async (req, res) => {
         res.send(movie);    
     }
     catch (ex) {
-        res.status(404).json({ error: ex.message });
+        res.status(500).send('Internal server error.');
     }
 });
 
@@ -118,7 +118,7 @@ router.delete('/:id', auth, async (req, res) => {
         res.send(movie);    
     }
     catch (ex) {
-        res.status(404).json({ error: ex.message });
+        res.status(500).send('Internal server error.');
     }
 });
 */

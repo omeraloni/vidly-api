@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
         res.header('x-auth-token', token).send(_.pick(user, [ '_id', 'name', 'email' ]));
     }
     catch (ex) {
-        res.status(400).json({ error: ex.message });
+        res.status(500).send('Internal server error.');
     }
 });
 

@@ -5,10 +5,6 @@ require('express-async-errors');
 
 const LOG_DIR = path.normalize(`${process.cwd()}/logs`);
 
-const myFormat = winston.format.printf(info => {
-    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
-  });
-
 module.exports = function() {
     winston.exceptions.handle(new winston.transports.File({
         dirname: LOG_DIR,
@@ -17,19 +13,23 @@ module.exports = function() {
         handleExceptions: true
     }));
 
+    // winston handles only unhandledException, so unhandledRejection is re-thrown
     process.on('unhandledRejection', (ex) => {
         throw ex;
     });
 
+    process.on('warning', (warn) => winston.warn(warn.message, { label: 'proc' }));
+    process.on('error', (err) => winston.error(err.message, { label: 'proc' }));
+
     winston.add(new winston.transports.File({
         dirname: LOG_DIR,
-        level: 'error',
-        filename: 'errors.log'        
+        filename: 'errors.log',
+        level: 'error'
     }));
 
     winston.add(new winston.transports.File({
         dirname: LOG_DIR,
-        filename: 'combined.log'        
+        filename: 'combined.log'
     }));
 
     if (process.env.NODE_ENV == 'development') {
@@ -37,7 +37,9 @@ module.exports = function() {
             format: winston.format.combine(
                 winston.format.colorize(),
                 winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-                myFormat
+                winston.format.printf(info => {
+                    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
+                  })
             )
         }));
 

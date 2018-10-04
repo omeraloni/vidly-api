@@ -1,0 +1,4 @@
+{
+    "name": "Vidly API - Test",
+    "jwtPrivateKey": "myPrivateKey"
+}

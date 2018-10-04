@@ -6,7 +6,7 @@ require('express-async-errors');
 const LOG_DIR = path.normalize(`${process.cwd()}/logs`); // TODO: config.get('logDir')
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-// FYI
+// Just an FYI
 const levels = {
     error: 0,
     warn: 1,

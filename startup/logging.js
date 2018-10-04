@@ -1,6 +1,10 @@
 const path = require('path');
 const winston = require('winston');
-require('winston-mongodb');
+
+if (process.env.NODE_ENV != 'test') {
+    require('winston-mongodb');
+}
+
 require('express-async-errors');
 
 const LOG_DIR = path.normalize(`${process.cwd()}/logs`); // TODO: config.get('logDir')
@@ -34,6 +38,7 @@ function consolePrint() {
 }
 
 module.exports = function() {
+    /*
     winston.exceptions.handle(new winston.transports.File({
         dirname: LOG_DIR,
         filename: 'exceptions.log',
@@ -48,6 +53,7 @@ module.exports = function() {
 
     process.on('warning', (warn) => winston.warn(warn.message, { label: 'proc' }));
     process.on('error', (err) => winston.error(err.message, { label: 'proc' }));
+    */
 
     winston.add(new winston.transports.File({
         dirname: LOG_DIR,
@@ -62,18 +68,28 @@ module.exports = function() {
         format: prettyPrintTimestamped(),
     }));
 
-    if (process.env.NODE_ENV == 'development') {
+    const enableConsole = process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'test';
+
+    if (enableConsole) {
         winston.add(new winston.transports.Console({
-            format: consolePrint(),
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp({ format: TIMESTAMP_FORMAT }),
+                winston.format.printf(info => {
+                    return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
+                  })
+            )
         }));
 
         //winston.exitOnError = false;
     }
 
-    winston.add(new winston.transports.MongoDB({
-        db: 'mongodb://localhost/vidly',
-        options: { useNewUrlParser: true }
-    }));
+    if (process.env.NODE_ENV != 'test') {
+        winston.add(new winston.transports.MongoDB({
+            db: 'mongodb://localhost/vidly',
+            options: { useNewUrlParser: true }
+        }));
+    }
 
     winston.info('Logging started', { label: 'logging' });
 }

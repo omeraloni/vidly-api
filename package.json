@@ -4,7 +4,7 @@
   "description": "Video store API",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --verbose",
+    "test": "jest --watchAll --verbose --runInBand",
     "start": "node index.js"
   },
   "repository": "github:omeraloni/vidly-api",

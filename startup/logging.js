@@ -68,7 +68,7 @@ module.exports = function() {
         format: prettyPrintTimestamped(),
     }));
 
-    const enableConsole = process.env.NODE_ENV == 'development' || process.env.NODE_ENV == 'test';
+    const enableConsole = process.env.NODE_ENV == 'development';// || process.env.NODE_ENV == 'test';
 
     if (enableConsole) {
         winston.add(new winston.transports.Console({

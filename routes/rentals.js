@@ -2,11 +2,8 @@ const router = require('express').Router();
 const { Rental, validate } = require('../models/rental');
 const { Movie } = require('../models/movie');
 const { Customer } = require('../models/customer');
-const mongoose = require('mongoose');
 const Fawn = require('fawn');
 const auth = require('../middleware/auth');
-
-Fawn.init(mongoose);
 
 router.get('/', async (req, res) => {
     const rentals = await Rental.find().sort('-dateOut');
@@ -17,7 +14,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const movie = await Rental.findById(req.params.id);
     if (!movie) return res.status(404).json({ error: "A movie with the given ID was not found" });
-    res.send(movie);    
+    res.send(movie);
 });
 */
 
@@ -33,12 +30,12 @@ router.post('/', auth, async (req, res) => {
 
     if (movie.numberInStock == 0) return res.status(404).json({ error: `Movie ${movie.title} is out of stock`});
 
-    const rental = new Rental({ 
+    const rental = new Rental({
         customer: {
             _id: customer._id,
             name: customer.name,
             phone: customer.phone
-        },            
+        },
         movie : {
             _id: movie._id,
             title: movie.title,
@@ -48,15 +45,15 @@ router.post('/', auth, async (req, res) => {
         date: Date.now
     });
 
-        // Transactions instead of 2 save operations
-        new Fawn.Task()
-            .save('rentals', rental)
-            .update('movies', { _id: movie._id}, { 
-                $inc: { numberInStock: -1}
-            })
-            .run();
+    // Transactions instead of 2 save operations
+    new Fawn.Task()
+        .save('rentals', rental)
+        .update('movies', { _id: movie._id}, {
+            $inc: { numberInStock: -1}
+        })
+        .run();
 
-        res.send(rental);
+    res.send(rental);
 });
 
 // Default handler for all / routes
@@ -75,7 +72,7 @@ router.put('/:id', auth, async (req, res) => {
 
     const movie = await Rental.findByIdAndUpdate(
         req.params.id,
-        { 
+        {
             title: req.body.title,
             customer: {
                 _id: customer._id,
@@ -87,14 +84,14 @@ router.put('/:id', auth, async (req, res) => {
         { new: true });
 
     if (!movie) return res.status(404).json({ error: "A movie with the given ID was not found" });
-    
-    res.send(movie);    
+
+    res.send(movie);
 });
 
 router.delete('/:id', auth, async (req, res) => {
     const movie = await Rental.findOneAndRemove({ _id: req.params.id });
     if (!movie) return res.status(404).send();
-    res.send(movie);    
+    res.send(movie);
 });
 */
 

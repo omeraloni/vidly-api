@@ -4,30 +4,20 @@ const { Movie } = require('../models/movie');
 const Fawn = require('fawn');
 const auth = require('../middleware/auth');
 const validate = require('../middleware/validate');
-const moment = require('moment');
 const Joi = require('joi');
 
-router.post('/', [ auth, validate(validateReturn) ], async (req, res) => {
+router.post('/', [auth, validate(validateReturn)], async (req, res) => {
 
-    //const rental = await Rental.lookup(req.body.customerId, req.body.movieId);
-
-    const rental = await Rental.findOne({
-        'customer._id': req.body.customerId,
-        'movie._id': req.body.movieId,
-    });
-
+    const rental = await Rental.lookup(req.body.customerId, req.body.movieId);
     if (!rental) return res.status(404).send('Invalid ID.');
-
     if (rental.dateReturned) return res.status(400).send('Return already processed.');
 
-    rental.dateReturned = Date.now();
-    const days = moment().diff(rental.dateOut, 'days');
-    rental.rentalFee = days * rental.movie.dailyRentalRate;
+    rental.return();
     await rental.save();
 
-    const movie = await Movie.findById(rental.movie._id);
-    movie.numberInStock++;
-    await movie.save();
+    await Movie.update({ _id: rental.movie._id }, {
+        $inc: { numberInStock: 1 }
+    });
 
     /*
     new Fawn.Task()

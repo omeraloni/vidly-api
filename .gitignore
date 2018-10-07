@@ -1,6 +1,5 @@
 node_modules/
 coverage/
-logs/
 .vscode/
 *.log
 *.code-workspace

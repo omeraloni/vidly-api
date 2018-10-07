@@ -1,5 +1,6 @@
 const path = require('path');
 const winston = require('winston');
+const config = require('config');
 
 if (process.env.NODE_ENV != 'test') {
     require('winston-mongodb');
@@ -86,7 +87,7 @@ module.exports = function() {
 
     if (process.env.NODE_ENV != 'test') {
         winston.add(new winston.transports.MongoDB({
-            db: 'mongodb://localhost/vidly',
+            db: config.get('db'),
             options: { useNewUrlParser: true }
         }));
     }

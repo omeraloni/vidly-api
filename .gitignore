@@ -3,3 +3,4 @@ coverage/
 .vscode/
 *.log
 *.code-workspace
+.DS_Store

@@ -5,8 +5,16 @@ const Fawn = require('fawn');
 
 module.exports = function () {
     const db = config.get('db');
-    mongoose.connect(db, { useNewUrlParser: true })
-    .then(() => winston.info(`Connected to ${db}`, { label: 'db' }));
 
-    Fawn.init(mongoose);
+    winston.info(`Connecting to ${db}...`, { label: 'db' });
+
+    mongoose.connect(db, { useNewUrlParser: true })
+    .then(() => {
+        winston.info(`Connected to ${db}!`, { label: 'db' })
+        Fawn.init(mongoose);  
+    })
+    .catch(error => {
+        winston.error(`${error}`, { label: 'db' });
+        process.exit(-1);
+    });
 }

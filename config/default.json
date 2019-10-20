@@ -1,5 +1,5 @@
 {
     "name": "Vidly API",
     "jwtPrivatJey": "",
-    "db": "mongodb://localhost/vidly"
+    "db": "mongodb://mongo/vidly"
 }

@@ -1,0 +1,18 @@
+version: "2"
+services:
+  app:
+    container_name: vidly-api
+    restart: on-failure
+    build: .
+    ports:
+      - "4000:4000"
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    command: [mongod, --dbpath, /data/db]
+    volumes:
+      - /Users/omeraloni/data:/data/db
+    ports:
+      - "27017:27017"

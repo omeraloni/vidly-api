@@ -17,7 +17,7 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "compression": "^1.7.3",
-    "config": "^2.0.1",
+    "config": "^3.3.8",
     "express": "^4.16.3",
     "express-async-errors": "^3.0.0",
     "fawn": "^2.1.5",
